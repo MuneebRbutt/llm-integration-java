@@ -67,5 +67,6 @@ public class GeminiClient implements LLMService {
         }
 
         return "⚠️ No valid reply received.";
+        System.out.println("Hi");
     }
 }
