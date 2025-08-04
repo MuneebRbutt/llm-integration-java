@@ -51,12 +51,14 @@ public class GeminiClient implements LLMService {
         String line;
         while ((line = br.readLine()) != null) {
             response.append(line);
+        
         }
 
         conn.disconnect();
 
         JsonObject jsonResponse = JsonParser.parseString(response.toString()).getAsJsonObject();
         JsonArray choices = jsonResponse.getAsJsonArray("choices");
+        System.out.println(response.toString());
 
         if (choices != null && choices.size() > 0) {
             JsonObject firstChoice = choices.get(0).getAsJsonObject();
