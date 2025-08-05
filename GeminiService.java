@@ -8,14 +8,14 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class GeminiClient implements LLMService {
+public class GeminiService implements LLMService {
     private static final String API_URL = "https://openrouter.ai/api/v1/chat/completions";
     private static final String apiKey = System.getenv("GEMINI_API_KEY");
 
     @Override
     public String getChatResponse(String userPrompt) throws Exception {
         if (apiKey == null || apiKey.isEmpty()) {
-            return "❌ API key is missing. Please set the GEMINI_API_KEY environment variable.";
+            return "❌ Gemini API key missing. Please set GEMINI_API_KEY.";
         }
 
         URL url = new URL(API_URL);
@@ -51,14 +51,12 @@ public class GeminiClient implements LLMService {
         String line;
         while ((line = br.readLine()) != null) {
             response.append(line);
-        
         }
 
         conn.disconnect();
 
         JsonObject jsonResponse = JsonParser.parseString(response.toString()).getAsJsonObject();
         JsonArray choices = jsonResponse.getAsJsonArray("choices");
-        System.out.println(response.toString());
 
         if (choices != null && choices.size() > 0) {
             JsonObject firstChoice = choices.get(0).getAsJsonObject();
@@ -66,7 +64,6 @@ public class GeminiClient implements LLMService {
             return message.get("content").getAsString();
         }
 
-        return "⚠️ No valid reply received.";
-        System.out.println("Hi");
+        return "⚠️ No valid response from Gemini.";
     }
 }
