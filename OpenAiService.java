@@ -34,7 +34,8 @@ public class OpenAiService implements LLMService {
 
             JsonObject payload = new JsonObject();
             payload.add("messages", messages);
-            payload.addProperty("model", "gpt-3.5-turbo"); // or gpt-4 if you have access
+            string modelName = "gpt-3.5-turbo";
+            payload.addProperty("model", modelName); // or gpt-4 if you have access
 
             try (OutputStream os = connection.getOutputStream()) {
                 byte[] input = payload.toString().getBytes("utf-8");
