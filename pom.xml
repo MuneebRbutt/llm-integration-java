@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.example</groupId>
-    <artifactId>GeminiApi</artifactId>
+    <artifactId>Interface_Implementation</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
@@ -15,18 +15,18 @@
     </properties>
 
     <dependencies>
-        <!-- Gson for JSON handling -->
+        <!-- GSON for JSON parsing -->
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.10.1</version>
         </dependency>
 
-        <!-- Optional: Apache HttpClient if using it for HTTP requests -->
+        <!-- Java Dotenv for loading .env variables -->
         <dependency>
-            <groupId>org.apache.httpcomponents.client5</groupId>
-            <artifactId>httpclient5</artifactId>
-            <version>5.2.1</version>
+            <groupId>io.github.cdimascio</groupId>
+            <artifactId>java-dotenv</artifactId>
+            <version>5.2.2</version>
         </dependency>
     </dependencies>
 
