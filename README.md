@@ -1,117 +1,134 @@
-# **GeminiClient – LLM API Integration in Java**
+# 🤖 LLM Integration Console App (Java)
 
-This Java project demonstrates how to integrate and interact with the **Gemini LLM** (Large Language Model) API from [OpenRouter.ai](https://openrouter.ai) to get AI chat completions. It offers a simple command-line interface (CLI) where users can chat with the LLM, track their question history, and are limited to a specific number of questions.
-
----
-
-## **✨ Features**
-
-- Connects to Gemini API (`google/gemini-flash-1.5` model) using RESTful HTTP POST.
-- API key-based authentication using environment variable `GEMINI_API_KEY`.
-- Multi-user support based on usernames.
-- Tracks user questions with a per-user limit of **5**.
-- Stores and displays **chat history** for each user.
-- Validates user inputs:
-  - Minimum length requirement
-  - Must contain at least one letter
-  - Must end with a question mark `?`
-- Simple and interactive CLI menu.
-- Clean architecture using `LLMService` interface for LLM abstraction.
+This is a **Java console-based application** that allows users to interact with different **Large Language Models (LLMs)** such as **Gemini** and **OpenAI**, in a clean, extendable architecture. It supports username tracking, question limits, and dynamic model selection.
 
 ---
 
-## **🛠 Prerequisites**
+## 🚀 Features
 
-- **Java 8** or above
-- Internet connection
-- API key from [OpenRouter.ai](https://openrouter.ai) or any Gemini-compatible provider
+- ✅ Choose between **Gemini** and **OpenAI** for chatting
+- 👤 Track **user question count** (limited to 5 questions)
+- 🔒 **Filter out gibberish or invalid questions**
+- 🔁 Option to return to main menu or exit anytime
+- 🧩 **Easily add new LLMs** in the future with minimal changes
+- 🔐 Uses `.env` file for API key security (via `dotenv-java`)
+- ☁️ Built for **modularity** and clean interface separation
 
-### **Set Environment Variable**
 
-**Linux/macOS:**
+## 🛠️ Project Structure
+
+LLM-Integration/
+│
+├── src/main/java/org/example/
+│ ├── Main.java # Console interface
+│ ├── LLMService.java # Interface for any LLM
+│ ├── LLMClient.java # Handles which LLM service to use
+│ ├── GeminiService.java # Gemini API integration
+│ ├── OpenAiService.java # OpenAI API integration
+│
+├── .env # Stores API keys securely
+├── .gitignore
+└── README.md
+
+
+---
+
+## ⚙️ Setup Instructions
+
+
+1. Clone this Repository
+
 ```bash
-export GEMINI_API_KEY="your_api_key_here"
+git clone https://github.com/your-username/llm-integration.git
+cd llm-integration
 
-## **For windows:**
-set GEMINI_API_KEY=your_api_key_here
+2. Install Dependencies
+Make sure you have:
+Java 17+
+IntelliJ IDEA or any Java IDE
+Maven
 
-📁 Project Structure
-LLMService.java
-Defines an interface for large language model services:
+3. Add this to your pom.xml:
+<dependencies>
+    <!-- GSON -->
+    <dependency>
+        <groupId>com.google.code.gson</groupId>
+        <artifactId>gson</artifactId>
+        <version>2.10.1</version>
+    </dependency>
 
-## String getChatResponse(String userMessage) throws Exception;
-GeminiClient.java
-Implements LLMService. Handles:
+    <!-- dotenv-java -->
+    <dependency>
+        <groupId>io.github.cdimascio</groupId>
+        <artifactId>dotenv-java</artifactId>
+        <version>3.0.0</version>
+    </dependency>
+</dependencies>
 
-HTTP requests
+4. Add API Keys
+Create a .env file in the root:
+GEMINI_API_KEY=your_gemini_key_here
+OPENAI_API_KEY=your_openai_key_here
 
-Authentication
 
-JSON parsing
+Running the App
+# Compile and run
+mvn compile
+mvn exec:java -Dexec.mainClass="org.example.Main"
 
-Returns chat response from Gemini API
+💡 How to Add a New LLM (e.g., Claude, Mistral, etc.)
+1. To add a new chatbot model:
 
-LLMChatApp.java
-Provides the CLI. Users can:
+Create a new class that implements LLMService
+public class ClaudeService implements LLMService {
+    @Override
+    public String getChatCompletion(String prompt) {
+        // Your Claude API integration logic here
+        return "Claude’s reply";
+    }
+}
 
-Enter a username and start chatting
-View previous chat history
-Exit the program
+2.Update Main.java:
+Add another option in the chooseLLM() method:
 
-▶️ How to Run:
-Clone or download this repository.
-Ensure GEMINI_API_KEY is set as described above.
-Compile Java files (make sure gson.jar is included in your classpath):
- javac -cp gson-<version>.jar org/example/*.java
+System.out.println("3. Claude");  
+// Add in chooseLLM() method
+return switch (choice) {
+    case "1" -> new GeminiService();
+    case "2" -> new OpenAiService();
+    case "3" -> new ClaudeService();  // Add this line
+    default -> {
+        System.out.println("Invalid choice.");
+        yield null;
+    }
+};
+✅ Done! No need to change LLMClient or any other class.
 
-Run the main class:
- java -cp .;gson-<version>.jar org.example.LLMChatApp
 
-💡 Usage
-Press 1 – Enter username and start chatting (limit: 5 questions per user)
-Press 2 – View chat history for a user
-Press 3 – Exit the application
+# 📷 Sample Console Output
 
-📏 Chatting Guidelines
-Questions must:
-Be at least 5 characters long
-Contain at least one letter
-End with a ?
-Type exit at any time to end the chat session.
+Press 1 to interact with the LLM
+Press 2 to exit the program
+> 1
+Enter your username: muneeb
+Welcome, muneeb! You can ask up to 5 questions.
 
-💬 Example Interaction
-📢 Press 1 to start interacting with the LLM
-📜 Press 2 to view previous chat history
-🚪 Press 3 to exit
+Choose an LLM:
+1. Gemini
+2. OpenAI
+> 1
 
-Enter your choice: 1
-👤 Enter your username: alice
-👋 Hello, alice! You’ve already asked 0 question(s).
-💬 Type 'exit' to end the chat.
-
-📝 You: What is the capital of France?
-🤖 LLM: The capital of France is Paris.
-
-📝 You: exit
-👋 Chat ended.
-
-❗ Error Handling
-❌ API key is missing. Please set the GEMINI_API_KEY environment variable.
-Then:
-    Invalid API responses are shown in the console.
-    Input validation messages guide users to ask valid questions.
-
-📦 Dependencies
-Gson – Used for JSON parsing.
-Add the gson-<version>.jar to your classpath when compiling and running.
-
-📎 Notes
-Uses synchronous HttpURLConnection.
-The model and endpoint are hardcoded but can be modularized.
-In-memory storage for chat history (reset on every run).
-The LLMService interface allows easy extension to other LLM providers.
+Ask your question:
+> What is the capital of France?
+💬 LLM Response: The capital of France is Paris.
 
 📄 License
-This project is open-source and free to use.
+This project is open-source and free to use. No license restrictions. Any updations would be appreciated!
 
-Happy chatting with Gemini! 🚀
+
+
+
+
+
+
+
